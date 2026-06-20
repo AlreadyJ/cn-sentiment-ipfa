@@ -1,12 +1,12 @@
 """
 Chinese Sentiment Classification — IPFA Research Foundation
 ============================================================
-Fine-tunes bert-base-chinese on the Weibo16 dataset for
+Fine-tunes bert-base-chinese on the weibo_senti_100k dataset for
 binary sentiment (positive / negative).
 
-Weibo16 contains real Chinese social media posts across 16 topic
-subsets — a register much closer to clinical mental health discourse
-than product reviews, making it a stronger text-channel baseline for
+weibo_senti_100k contains real Chinese social media posts 
+ — a register close to clinical mental health discourse,
+making it a strong text-channel baseline for
 the IPFA research pipeline.
 
 Usage
@@ -41,9 +41,6 @@ from transformers import (
     get_linear_schedule_with_warmup,
 )
 
-SUBSETS = ['HM','sex','中美','代孕','外国人','孙小果','文科生','日本核污水',
-           '瑞丽疫情','疫苗','红黄蓝','蓬佩奥病毒','阿里巴巴','韩国吃播道歉','韩国幽灵整容','马云谈996']
-
 
 # ── Dataset wrapper ───────────────────────────────────────────────────────────
 class SentimentDataset(Dataset):
@@ -62,11 +59,11 @@ class SentimentDataset(Dataset):
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def load_and_prepare(tokenizer, max_len):
-    """Load Weibo16 (all subsets), tokenise, return train/test splits."""
-    print("Loading Weibo16 dataset …")
+    """Load weibo_senti_100k (all subsets), tokenise, return train/test splits."""
+    print("Loading weibo_senti_100k dataset …")
     splits = {"train": [], "validation": [], "test": []}
     for subset in SUBSETS:
-        ds_sub = load_dataset("kuroneko5943/weibo16", subset)
+        ds_sub = load_dataset("dirtycomputer/weibo_senti_100k", subset)
         for split in splits:
             splits[split].append(ds_sub[split])
     ds = {split: concatenate_datasets(parts) for split, parts in splits.items()}
@@ -204,7 +201,7 @@ def main(args):
                     yticklabels=["negative", "positive"], ax=ax)
         ax.set_xlabel("Predicted")
         ax.set_ylabel("True")
-        ax.set_title("Confusion Matrix — bert-base-chinese (Weibo16)")
+        ax.set_title("Confusion Matrix — bert-base-chinese (weibo_senti_100k)")
         fig.tight_layout()
         fig.savefig("results/confusion_matrix.png", dpi=150)
         print("Saved results/confusion_matrix.png")
