@@ -109,7 +109,7 @@ def main(args):
     model_name = "bert-base-chinese"
     print(f"Loading {model_name} …")
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    # 2-class for ChnSentiCorp binary version (neg / pos)
+    # 2-class for binary version (neg / pos)
     model = AutoModelForSequenceClassification.from_pretrained(
         model_name,
         num_labels=2,
